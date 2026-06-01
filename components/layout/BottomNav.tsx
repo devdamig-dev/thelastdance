@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Target, Users, User, History } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/dashboard",   label: "Inicio",      icon: LayoutDashboard },
@@ -18,9 +17,10 @@ export function BottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-50 h-16 flex items-center safe-area-inset-bottom"
+      className="md:hidden fixed left-0 right-0 bottom-0 z-50 flex items-center"
       style={{
-        background: "rgba(7,18,15,0.92)",
+        height: 60,
+        background: "rgba(7,18,15,0.94)",
         backdropFilter: "blur(20px) saturate(1.5)",
         borderTop: "1px solid rgba(255,255,255,0.08)",
       }}
@@ -31,34 +31,36 @@ export function BottomNav() {
           <Link
             key={href}
             href={href}
-            className="flex-1 flex flex-col items-center justify-center gap-1 h-full relative group"
+            className="flex-1 flex flex-col items-center justify-center h-full relative"
+            style={{ gap: 3 }}
           >
-            {/* Icon container */}
-            <div className={cn(
-              "flex items-center justify-center w-9 h-7 rounded-xl transition-all duration-200",
-              active
-                ? "bg-[#00D084]/15"
-                : "group-active:bg-white/5"
-            )}>
+            {/* Active top dot */}
+            {active && (
+              <span
+                className="absolute rounded-full"
+                style={{ top: 6, left: "50%", transform: "translateX(-50%)", width: 4, height: 4, background: "#00D084", boxShadow: "0 0 6px #00D084" }}
+              />
+            )}
+            {/* Icon pill */}
+            <div
+              className="flex items-center justify-center rounded-xl transition-all"
+              style={{
+                width: 36, height: 28,
+                background: active ? "rgba(0,208,132,0.15)" : "transparent",
+              }}
+            >
               <Icon
-                className={cn(
-                  "w-5 h-5 transition-all duration-200",
-                  active
-                    ? "text-[#00D084] drop-shadow-[0_0_8px_#00D084]"
-                    : "text-[#475569] group-hover:text-[#94A3B8]"
-                )}
+                style={{
+                  width: 20, height: 20,
+                  color: active ? "#00D084" : "#475569",
+                  filter: active ? "drop-shadow(0 0 8px #00D084)" : "none",
+                  transition: "color 0.2s",
+                }}
               />
             </div>
-            <span className={cn(
-              "text-[9px] font-semibold leading-none tracking-wide transition-colors duration-200",
-              active ? "text-[#00D084]" : "text-[#475569]"
-            )}>
+            <span style={{ fontSize: 9, fontWeight: 600, letterSpacing: "0.03em", color: active ? "#00D084" : "#475569" }}>
               {label}
             </span>
-            {/* Active dot */}
-            {active && (
-              <span className="absolute top-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#00D084] shadow-[0_0_4px_#00D084]" />
-            )}
           </Link>
         );
       })}

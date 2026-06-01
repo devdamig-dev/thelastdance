@@ -7,13 +7,9 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, ArrowRight, ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 
 const schema = z.object({
   nombre: z.string().min(2, "Mínimo 2 caracteres").max(30, "Máximo 30 caracteres"),
@@ -23,7 +19,6 @@ const schema = z.object({
     .max(6, "El PIN debe tener entre 4 y 6 dígitos")
     .regex(/^\d+$/, "Solo números"),
 });
-
 type FormData = z.infer<typeof schema>;
 
 export function LoginForm() {
@@ -32,39 +27,20 @@ export function LoginForm() {
   const { login } = useAuth();
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
       const supabase = createClient();
       const { data: userData, error } = await supabase
-        .from("usuarios")
-        .select("*")
-        .eq("nombre", data.nombre.trim())
-        .eq("pin", data.pin)
-        .single();
+        .from("usuarios").select("*")
+        .eq("nombre", data.nombre.trim()).eq("pin", data.pin).single();
 
-      if (error || !userData) {
-        toast.error("Nombre o PIN incorrecto");
-        return;
-      }
+      if (error || !userData) { toast.error("Nombre o PIN incorrecto"); return; }
 
-      const user = userData as {
-        id: string; nombre: string; pin: string;
-        avatar: string | null; rol: string; created_at: string;
-      };
-
-      login({
-        id: user.id, nombre: user.nombre, pin: user.pin,
-        avatar: user.avatar, rol: user.rol as "user" | "admin",
-        created_at: user.created_at,
-      });
-
+      const user = userData as { id: string; nombre: string; pin: string; avatar: string | null; rol: string; created_at: string };
+      login({ id: user.id, nombre: user.nombre, pin: user.pin, avatar: user.avatar, rol: user.rol as "user" | "admin", created_at: user.created_at });
       toast.success(`Bienvenido, ${userData.nombre}!`);
       router.push(user.rol === "admin" ? "/admin" : "/dashboard");
     } catch {
@@ -74,108 +50,110 @@ export function LoginForm() {
     }
   };
 
-  return (
-    <div className="w-full max-w-sm mx-auto">
+  const inputStyle: React.CSSProperties = {
+    width: "100%", height: 52, borderRadius: 12,
+    border: "1px solid rgba(255,255,255,0.12)",
+    background: "rgba(255,255,255,0.07)",
+    color: "#F8FAFC", fontSize: 14, padding: "0 16px",
+    outline: "none", transition: "border-color 0.2s",
+  };
 
-      {/* Logo & header */}
-      <div className="text-center mb-8">
-        <div className="relative inline-flex mb-5">
-          <div className="w-18 h-18 gradient-brand rounded-2xl flex items-center justify-center glow-green shadow-2xl">
-            <WorldCupIcon className="w-9 h-9 text-white" />
+  return (
+    <div style={{ width: "100%", maxWidth: 420, margin: "0 auto" }}>
+
+      {/* Logo */}
+      <div className="text-center" style={{ marginBottom: 32 }}>
+        <div style={{ position: "relative", display: "inline-flex", marginBottom: 16 }}>
+          <div
+            className="gradient-brand glow-green rounded-2xl flex items-center justify-center shadow-2xl"
+            style={{ width: 64, height: 64 }}
+          >
+            <TrophyIcon style={{ width: 32, height: 32, color: "white" }} />
           </div>
-          {/* Glow ring */}
-          <div className="absolute inset-0 rounded-2xl bg-[#00D084]/20 blur-xl -z-10" />
+          <div style={{ position: "absolute", inset: 0, borderRadius: 16, background: "rgba(0,208,132,0.25)", filter: "blur(16px)", zIndex: -1 }} />
         </div>
-        <h1 className="text-2xl font-black tracking-tight text-[#F8FAFC]">
+        <h1 className="font-black text-[#F8FAFC]" style={{ fontSize: 24, letterSpacing: "-0.5px" }}>
           PRODE <span className="text-gradient">MUNDIAL</span>
         </h1>
-        <p className="text-[#94A3B8] text-sm mt-1.5">Ingresá a tu cuenta</p>
+        <p className="text-[#94A3B8]" style={{ fontSize: 14, marginTop: 4 }}>Ingresá a tu cuenta</p>
       </div>
 
-      {/* Form card */}
-      <div className="glass-elevated rounded-2xl p-6 shadow-2xl">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {/* Card */}
+      <div
+        className="glass-elevated shadow-2xl"
+        style={{ borderRadius: 24, padding: "28px 24px" }}
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="nombre" className="text-[#94A3B8] text-xs font-medium uppercase tracking-wider">
+          {/* Nombre */}
+          <div style={{ marginBottom: 18 }}>
+            <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "#94A3B8", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>
               Nombre de usuario
-            </Label>
-            <Input
-              id="nombre"
+            </label>
+            <input
               placeholder="Tu nombre en la liga"
               {...register("nombre")}
               autoComplete="username"
-              className={cn(errors.nombre && "border-[#F87171]/50 focus-visible:border-[#F87171] focus-visible:ring-[#F87171]/20")}
+              style={{ ...inputStyle, borderColor: errors.nombre ? "rgba(248,113,113,0.5)" : "rgba(255,255,255,0.12)" }}
             />
-            {errors.nombre && (
-              <p className="text-xs text-[#F87171] flex items-center gap-1">
-                <span className="inline-block w-3.5 h-3.5 rounded-full bg-[#F87171]/15 text-center text-[9px] leading-3.5">!</span>
-                {errors.nombre.message}
-              </p>
-            )}
+            {errors.nombre && <p style={{ color: "#F87171", fontSize: 12, marginTop: 4 }}>{errors.nombre.message}</p>}
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="pin" className="text-[#94A3B8] text-xs font-medium uppercase tracking-wider">
+          {/* PIN */}
+          <div style={{ marginBottom: 24 }}>
+            <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "#94A3B8", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>
               PIN
-            </Label>
-            <div className="relative">
-              <Input
-                id="pin"
+            </label>
+            <div style={{ position: "relative" }}>
+              <input
                 type={showPin ? "text" : "password"}
                 placeholder="4–6 dígitos"
                 inputMode="numeric"
                 {...register("pin")}
                 autoComplete="current-password"
-                className={cn(
-                  "pr-12 font-mono tracking-widest",
-                  errors.pin && "border-[#F87171]/50 focus-visible:border-[#F87171] focus-visible:ring-[#F87171]/20"
-                )}
+                style={{ ...inputStyle, paddingRight: 48, fontFamily: "monospace", letterSpacing: "0.15em", borderColor: errors.pin ? "rgba(248,113,113,0.5)" : "rgba(255,255,255,0.12)" }}
               />
               <button
                 type="button"
                 onClick={() => setShowPin(!showPin)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#475569] hover:text-[#94A3B8] transition-colors"
+                style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", color: "#475569", background: "none", border: "none", cursor: "pointer", padding: 4 }}
               >
-                {showPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPin ? <EyeOff style={{ width: 16, height: 16 }} /> : <Eye style={{ width: 16, height: 16 }} />}
               </button>
             </div>
-            {errors.pin && (
-              <p className="text-xs text-[#F87171]">{errors.pin.message}</p>
-            )}
+            {errors.pin && <p style={{ color: "#F87171", fontSize: 12, marginTop: 4 }}>{errors.pin.message}</p>}
           </div>
 
-          <div className="pt-1">
-            <Button type="submit" size="lg" className="w-full gap-2" disabled={loading}>
-              {loading ? (
-                <Spinner />
-              ) : (
-                <>
-                  Ingresar <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </Button>
-          </div>
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-gradient text-white font-bold rounded-xl w-full flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+            style={{ height: 52, fontSize: 15 }}
+          >
+            {loading ? <Spinner /> : <><span>Ingresar</span><ArrowRight style={{ width: 16, height: 16 }} /></>}
+          </button>
         </form>
 
         {/* Divider */}
-        <div className="my-5 flex items-center gap-3">
-          <div className="flex-1 h-px bg-white/8" />
-          <span className="text-[#475569] text-xs">¿nuevo aquí?</span>
-          <div className="flex-1 h-px bg-white/8" />
+        <div className="flex items-center gap-3" style={{ margin: "20px 0" }}>
+          <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.08)" }} />
+          <span style={{ color: "#475569", fontSize: 12, whiteSpace: "nowrap" }}>¿nuevo aquí?</span>
+          <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.08)" }} />
         </div>
 
         <Link
           href="/register"
-          className="flex items-center justify-center gap-2 h-11 w-full rounded-xl border border-white/10 bg-white/4 text-sm text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-white/8 hover:border-white/18 transition-all duration-200"
+          className="flex items-center justify-center font-medium text-[#94A3B8] hover:text-[#F8FAFC] transition-colors rounded-xl border border-white/10 hover:bg-white/5"
+          style={{ height: 48, fontSize: 14 }}
         >
           Crear una cuenta gratis
         </Link>
       </div>
 
       {/* Security note */}
-      <div className="flex items-center justify-center gap-1.5 mt-5 text-xs text-[#475569]">
-        <ShieldCheck className="w-3.5 h-3.5" />
+      <div className="flex items-center justify-center gap-1.5 text-[#475569]" style={{ marginTop: 20, fontSize: 12 }}>
+        <ShieldCheck style={{ width: 13, height: 13 }} />
         <span>Tu PIN es privado y nunca se comparte</span>
       </div>
     </div>
@@ -184,23 +162,18 @@ export function LoginForm() {
 
 function Spinner() {
   return (
-    <span className="flex items-center gap-2">
-      <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-      </svg>
-      Ingresando...
-    </span>
+    <svg className="animate-spin" style={{ width: 16, height: 16 }} fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+    </svg>
   );
 }
 
-function WorldCupIcon({ className }: { className?: string }) {
+function TrophyIcon({ style }: { style?: React.CSSProperties }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
-      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
-      <path d="M4 22h16" />
-      <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={style}>
+      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" /><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+      <path d="M4 22h16" /><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
       <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
       <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
     </svg>
