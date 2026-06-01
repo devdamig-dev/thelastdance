@@ -75,7 +75,7 @@ export function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto">
+    <div className="w-full max-w-[420px] mx-auto">
 
       {/* Logo & header */}
       <div className="text-center mb-8">
@@ -93,10 +93,10 @@ export function LoginForm() {
       </div>
 
       {/* Form card */}
-      <div className="glass-elevated rounded-2xl p-6 shadow-2xl">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="glass-elevated rounded-3xl p-6 md:p-8 shadow-2xl">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-[18px]">
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <Label htmlFor="nombre" className="text-[#94A3B8] text-xs font-medium uppercase tracking-wider">
               Nombre de usuario
             </Label>
@@ -105,7 +105,7 @@ export function LoginForm() {
               placeholder="Tu nombre en la liga"
               {...register("nombre")}
               autoComplete="username"
-              className={cn(errors.nombre && "border-[#F87171]/50 focus-visible:border-[#F87171] focus-visible:ring-[#F87171]/20")}
+              className={cn("h-14", errors.nombre && "border-[#F87171]/50 focus-visible:border-[#F87171] focus-visible:ring-[#F87171]/20")}
             />
             {errors.nombre && (
               <p className="text-xs text-[#F87171] flex items-center gap-1">
@@ -115,7 +115,7 @@ export function LoginForm() {
             )}
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <Label htmlFor="pin" className="text-[#94A3B8] text-xs font-medium uppercase tracking-wider">
               PIN
             </Label>
@@ -128,7 +128,7 @@ export function LoginForm() {
                 {...register("pin")}
                 autoComplete="current-password"
                 className={cn(
-                  "pr-12 font-mono tracking-widest",
+                  "h-14 pr-12 font-mono tracking-widest",
                   errors.pin && "border-[#F87171]/50 focus-visible:border-[#F87171] focus-visible:ring-[#F87171]/20"
                 )}
               />
@@ -145,8 +145,8 @@ export function LoginForm() {
             )}
           </div>
 
-          <div className="pt-1">
-            <Button type="submit" size="lg" className="w-full gap-2" disabled={loading}>
+          <div className="pt-1.5">
+            <Button type="submit" size="lg" className="w-full h-14 gap-2" disabled={loading}>
               {loading ? (
                 <Spinner />
               ) : (
@@ -159,15 +159,15 @@ export function LoginForm() {
         </form>
 
         {/* Divider */}
-        <div className="my-5 flex items-center gap-3">
+        <div className="my-6 flex items-center gap-3">
           <div className="flex-1 h-px bg-white/8" />
-          <span className="text-[#475569] text-xs">¿nuevo aquí?</span>
+          <span className="text-[#475569] text-xs whitespace-nowrap">¿nuevo aquí?</span>
           <div className="flex-1 h-px bg-white/8" />
         </div>
 
         <Link
           href="/register"
-          className="flex items-center justify-center gap-2 h-11 w-full rounded-xl border border-white/10 bg-white/4 text-sm text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-white/8 hover:border-white/18 transition-all duration-200"
+          className="flex items-center justify-center gap-2 h-12 w-full rounded-xl border border-white/10 bg-white/4 text-sm text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-white/8 hover:border-white/18 transition-all duration-200"
         >
           Crear una cuenta gratis
         </Link>

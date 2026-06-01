@@ -16,9 +16,9 @@ export function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-15 flex items-center"
+    <header className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center"
       style={{ background: "rgba(7,18,15,0.85)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-      <div className="w-full px-4 flex items-center justify-between max-w-screen-2xl mx-auto">
+      <div className="w-full px-5 sm:px-6 flex items-center justify-between max-w-screen-2xl mx-auto">
 
         {/* Logo */}
         <Link href="/dashboard" className="flex items-center gap-2.5 group">

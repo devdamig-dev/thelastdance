@@ -119,7 +119,7 @@ export function RegisterForm() {
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto">
+    <div className="w-full max-w-[420px] mx-auto">
 
       {/* Logo */}
       <div className="text-center mb-7">
@@ -135,11 +135,11 @@ export function RegisterForm() {
         <p className="text-[#94A3B8] text-sm mt-1.5">Creá tu cuenta</p>
       </div>
 
-      <div className="glass-elevated rounded-2xl p-6 shadow-2xl">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="glass-elevated rounded-3xl p-6 md:p-8 shadow-2xl">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-[18px]">
 
           {/* Avatar preview + color picker */}
-          <div className="space-y-2.5">
+          <div className="space-y-3">
             <Label className="text-[#94A3B8] text-xs font-medium uppercase tracking-wider">
               Tu avatar
             </Label>
@@ -154,13 +154,13 @@ export function RegisterForm() {
               </div>
 
               {/* Color grid */}
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-4 gap-2.5 flex-1">
                 {AVATAR_COLORS.map((color) => (
                   <button
                     key={color.id}
                     type="button"
                     onClick={() => setSelectedColor(color.id)}
-                    className="relative w-8 h-8 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95"
+                    className="relative w-full aspect-square max-w-9 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 mx-auto"
                     style={{ background: `linear-gradient(135deg, ${color.from}, ${color.to})` }}
                     title={color.id}
                   >
@@ -177,7 +177,7 @@ export function RegisterForm() {
 
           <div className="divider" />
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <Label htmlFor="nombre" className="text-[#94A3B8] text-xs font-medium uppercase tracking-wider">
               Nombre de usuario
             </Label>
@@ -186,14 +186,14 @@ export function RegisterForm() {
               placeholder="Cómo querés llamarte"
               {...register("nombre")}
               autoComplete="username"
-              className={cn(errors.nombre && "border-[#F87171]/50")}
+              className={cn("h-14", errors.nombre && "border-[#F87171]/50")}
             />
             {errors.nombre && (
               <p className="text-xs text-[#F87171]">{errors.nombre.message}</p>
             )}
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <Label htmlFor="pin" className="text-[#94A3B8] text-xs font-medium uppercase tracking-wider">
               PIN (4–6 dígitos)
             </Label>
@@ -205,7 +205,7 @@ export function RegisterForm() {
                 inputMode="numeric"
                 {...register("pin")}
                 autoComplete="new-password"
-                className={cn("pr-12 font-mono tracking-widest", errors.pin && "border-[#F87171]/50")}
+                className={cn("h-14 pr-12 font-mono tracking-widest", errors.pin && "border-[#F87171]/50")}
               />
               <button
                 type="button"
@@ -218,7 +218,7 @@ export function RegisterForm() {
             {errors.pin && <p className="text-xs text-[#F87171]">{errors.pin.message}</p>}
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <Label htmlFor="confirmPin" className="text-[#94A3B8] text-xs font-medium uppercase tracking-wider">
               Confirmar PIN
             </Label>
@@ -229,15 +229,15 @@ export function RegisterForm() {
               inputMode="numeric"
               {...register("confirmPin")}
               autoComplete="new-password"
-              className={cn("font-mono tracking-widest", errors.confirmPin && "border-[#F87171]/50")}
+              className={cn("h-14 font-mono tracking-widest", errors.confirmPin && "border-[#F87171]/50")}
             />
             {errors.confirmPin && (
               <p className="text-xs text-[#F87171]">{errors.confirmPin.message}</p>
             )}
           </div>
 
-          <div className="pt-1">
-            <Button type="submit" size="lg" className="w-full gap-2" disabled={loading}>
+          <div className="pt-1.5">
+            <Button type="submit" size="lg" className="w-full h-14 gap-2" disabled={loading}>
               {loading ? (
                 <Spinner />
               ) : (
@@ -249,15 +249,15 @@ export function RegisterForm() {
           </div>
         </form>
 
-        <div className="my-5 flex items-center gap-3">
+        <div className="my-6 flex items-center gap-3">
           <div className="flex-1 h-px bg-white/8" />
-          <span className="text-[#475569] text-xs">¿ya tenés cuenta?</span>
+          <span className="text-[#475569] text-xs whitespace-nowrap">¿ya tenés cuenta?</span>
           <div className="flex-1 h-px bg-white/8" />
         </div>
 
         <Link
           href="/login"
-          className="flex items-center justify-center gap-2 h-11 w-full rounded-xl border border-white/10 bg-white/4 text-sm text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-white/8 hover:border-white/18 transition-all duration-200"
+          className="flex items-center justify-center gap-2 h-12 w-full rounded-xl border border-white/10 bg-white/4 text-sm text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-white/8 hover:border-white/18 transition-all duration-200"
         >
           Ingresar a mi cuenta
         </Link>

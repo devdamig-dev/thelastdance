@@ -34,8 +34,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen">
       <Navbar />
       <Sidebar />
-      <main className="md:ml-56 pt-15 pb-20 md:pb-8 min-h-screen">
-        <div className="max-w-4xl mx-auto px-4 py-6">{children}</div>
+      <main className="md:ml-56 pt-16 pb-24 md:pb-10 min-h-screen">
+        <div className="max-w-4xl mx-auto px-5 sm:px-8 py-6 md:py-8">{children}</div>
       </main>
       <BottomNav />
     </div>

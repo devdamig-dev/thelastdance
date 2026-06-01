@@ -22,7 +22,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className="hidden md:flex fixed left-0 top-15 bottom-0 w-56 flex-col z-40"
+      className="hidden md:flex fixed left-0 top-16 bottom-0 w-56 flex-col z-40"
       style={{ background: "rgba(7,18,15,0.7)", backdropFilter: "blur(20px)", borderRight: "1px solid rgba(255,255,255,0.07)" }}
     >
       <nav className="flex flex-col flex-1 p-3 gap-0.5 mt-3">
