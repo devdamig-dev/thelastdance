@@ -2,18 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard, Target, Users, User, History, ShieldCheck,
-} from "lucide-react";
+import { LayoutDashboard, Target, Users, User, History, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { NAVBAR_HEIGHT } from "./Navbar";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/dashboard",    label: "Dashboard",   icon: LayoutDashboard },
-  { href: "/pronosticos",  label: "Pronósticos", icon: Target },
-  { href: "/ligas",        label: "Mis Ligas",   icon: Users },
-  { href: "/historial",    label: "Historial",   icon: History },
-  { href: "/perfil",       label: "Mi Perfil",   icon: User },
+  { href: "/dashboard",   label: "Dashboard",   icon: LayoutDashboard },
+  { href: "/pronosticos", label: "Pronósticos", icon: Target },
+  { href: "/ligas",       label: "Mis Ligas",   icon: Users },
+  { href: "/historial",   label: "Historial",   icon: History },
+  { href: "/perfil",      label: "Mi Perfil",   icon: User },
 ];
 
 export function Sidebar() {
@@ -22,10 +21,16 @@ export function Sidebar() {
 
   return (
     <aside
-      className="hidden md:flex fixed left-0 top-15 bottom-0 w-56 flex-col z-40"
-      style={{ background: "rgba(7,18,15,0.7)", backdropFilter: "blur(20px)", borderRight: "1px solid rgba(255,255,255,0.07)" }}
+      className="hidden md:flex fixed left-0 bottom-0 flex-col z-40"
+      style={{
+        top: NAVBAR_HEIGHT,
+        width: 220,
+        background: "rgba(7,18,15,0.75)",
+        backdropFilter: "blur(20px)",
+        borderRight: "1px solid rgba(255,255,255,0.07)",
+      }}
     >
-      <nav className="flex flex-col flex-1 p-3 gap-0.5 mt-3">
+      <nav className="flex flex-col flex-1" style={{ padding: "12px 10px", gap: 2 }}>
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
           return (
@@ -33,48 +38,48 @@ export function Sidebar() {
               key={href}
               href={href}
               className={cn(
-                "relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
-                active
-                  ? "text-[#00D084] bg-[#00D084]/10"
-                  : "text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-white/5"
+                "relative flex items-center gap-3 rounded-xl font-medium transition-all duration-200",
+                active ? "text-[#00D084]" : "text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-white/5"
               )}
+              style={{ padding: "10px 12px", fontSize: 13 }}
             >
-              {/* Active indicator */}
               {active && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-[#00D084] rounded-r-full glow-green" />
+                <span
+                  className="absolute rounded-r-full"
+                  style={{ left: 0, top: "50%", transform: "translateY(-50%)", width: 3, height: 20, background: "#00D084", boxShadow: "0 0 8px #00D084" }}
+                />
               )}
-              <Icon className={cn("w-4 h-4 flex-shrink-0", active && "drop-shadow-[0_0_6px_#00D084]")} />
+              <Icon
+                style={{ width: 16, height: 16, flexShrink: 0, filter: active ? "drop-shadow(0 0 6px #00D084)" : "none" }}
+              />
               {label}
+              {active && (
+                <span style={{ position: "absolute", inset: 0, borderRadius: 12, background: "rgba(0,208,132,0.08)", pointerEvents: "none" }} />
+              )}
             </Link>
           );
         })}
 
         {user?.rol === "admin" && (
           <>
-            <div className="my-2 mx-3 divider" />
+            <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "8px 4px" }} />
             <Link
               href="/admin"
               className={cn(
-                "relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
-                pathname.startsWith("/admin")
-                  ? "text-[#F5C451] bg-[#F5C451]/10"
-                  : "text-[#94A3B8] hover:text-[#F5C451] hover:bg-[#F5C451]/5"
+                "relative flex items-center gap-3 rounded-xl font-medium transition-all duration-200",
+                pathname.startsWith("/admin") ? "text-[#F5C451]" : "text-[#94A3B8] hover:text-[#F5C451] hover:bg-[#F5C451]/5"
               )}
+              style={{ padding: "10px 12px", fontSize: 13 }}
             >
-              {pathname.startsWith("/admin") && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-[#F5C451] rounded-r-full" />
-              )}
-              <ShieldCheck className="w-4 h-4 flex-shrink-0" />
+              <ShieldCheck style={{ width: 16, height: 16, flexShrink: 0 }} />
               Admin Panel
             </Link>
           </>
         )}
       </nav>
 
-      {/* Bottom brand */}
-      <div className="p-4 mt-auto">
-        <div className="divider mb-3" />
-        <p className="text-[10px] text-[#475569] font-medium tracking-widest uppercase text-center">
+      <div style={{ padding: "16px 14px", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+        <p className="font-medium text-[#475569] text-center tracking-widest uppercase" style={{ fontSize: 10 }}>
           Mundial 2026
         </p>
       </div>

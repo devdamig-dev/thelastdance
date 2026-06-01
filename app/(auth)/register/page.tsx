@@ -4,9 +4,21 @@ export const metadata = { title: "Crear cuenta · Prode Mundial" };
 
 export default function RegisterPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-5 py-16 relative">
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-[#00D084]/6 blur-[100px] rounded-full pointer-events-none" />
-      <RegisterForm />
+    <div
+      className="flex relative overflow-hidden"
+      style={{ minHeight: "100dvh", padding: "64px 20px 40px" }}
+    >
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          top: "30%", left: "50%", transform: "translate(-50%, -50%)",
+          width: 400, height: 400,
+          background: "rgba(0,208,132,0.06)", filter: "blur(100px)",
+        }}
+      />
+      <div style={{ margin: "auto", width: "100%" }}>
+        <RegisterForm />
+      </div>
     </div>
   );
 }
