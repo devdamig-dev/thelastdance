@@ -1,24 +1,40 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --card: #111111;
-  --card-foreground: #fafafa;
-  --border: rgba(255, 255, 255, 0.1);
-  --input: #1a1a1a;
-  --primary: #00875a;
-  --primary-foreground: #ffffff;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #fafafa;
-  --muted: #1a1a1a;
-  --muted-foreground: #a1a1aa;
-  --accent: #10b981;
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --ring: #00875a;
-  --radius: 0.5rem;
+  /* Base palette */
+  --bg-base: #07120F;
+  --bg-surface: rgba(255, 255, 255, 0.055);
+  --bg-surface-hover: rgba(255, 255, 255, 0.085);
+  --bg-elevated: rgba(255, 255, 255, 0.09);
+
+  /* Brand */
+  --primary: #00D084;
+  --primary-deep: #007A4D;
+  --primary-glow: rgba(0, 208, 132, 0.2);
+
+  /* Gold accent */
+  --gold: #F5C451;
+  --gold-glow: rgba(245, 196, 81, 0.25);
+
+  /* Borders */
+  --border: rgba(255, 255, 255, 0.10);
+  --border-hover: rgba(255, 255, 255, 0.18);
+  --border-active: rgba(0, 208, 132, 0.45);
+
+  /* Text */
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #475569;
+
+  /* Semantic */
+  --error: #F87171;
+  --warning: #FBBF24;
+  --success: #00D084;
+
+  /* Radius */
+  --radius: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
 }
 
 * {
@@ -32,42 +48,158 @@ html {
 }
 
 body {
-  background-color: #0a0a0a;
-  color: #fafafa;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
   min-height: 100dvh;
   font-family: var(--font-inter, system-ui, sans-serif);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Subtle pitch-grid texture */
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0, 122, 77, 0.18) 0%, transparent 70%),
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 100% 100%, 64px 64px, 64px 64px;
+  background-attachment: fixed;
 }
 
+/* ─── Utility layer ─────────────────────────────────────────── */
 @layer utilities {
-  .gradient-brand {
-    background: linear-gradient(135deg, #00875a 0%, #1a6b3c 50%, #0d4f2d 100%);
-  }
-  .gradient-card {
-    background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
-  }
+
+  /* Glass card */
   .glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-surface);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border: 1px solid var(--border);
   }
+
+  .glass-elevated {
+    background: var(--bg-elevated);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border: 1px solid var(--border-hover);
+  }
+
+  /* Gradient card (replaces old gradient-card) */
+  .gradient-card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.065) 0%, rgba(255,255,255,0.03) 100%);
+    border: 1px solid var(--border);
+  }
+
+  /* Brand gradient */
+  .gradient-brand {
+    background: linear-gradient(135deg, #00D084 0%, #007A4D 100%);
+  }
+
+  /* Gold gradient */
+  .gradient-gold {
+    background: linear-gradient(135deg, #F5C451 0%, #D4A017 100%);
+  }
+
+  /* Text gradients */
   .text-gradient {
-    background: linear-gradient(135deg, #00875a, #10b981);
+    background: linear-gradient(135deg, #00D084 0%, #00FFB3 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #F5C451 0%, #FFE08A 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glows */
+  .glow-green {
+    box-shadow: 0 0 20px var(--primary-glow), 0 0 40px rgba(0, 208, 132, 0.08);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 20px var(--gold-glow), 0 0 40px rgba(245, 196, 81, 0.08);
+  }
+
+  .glow-text-green {
+    text-shadow: 0 0 20px rgba(0, 208, 132, 0.6);
+  }
+
+  /* Gradient button base */
+  .btn-gradient {
+    background: linear-gradient(135deg, #00D084 0%, #007A4D 100%);
+    box-shadow: 0 4px 24px rgba(0, 208, 132, 0.25), 0 1px 3px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+  }
+
+  .btn-gradient:hover {
+    box-shadow: 0 6px 32px rgba(0, 208, 132, 0.35), 0 2px 6px rgba(0,0,0,0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn-gradient:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 12px rgba(0, 208, 132, 0.2);
+  }
+
+  /* Active nav indicator */
+  .nav-active-pill {
+    position: relative;
+  }
+
+  .nav-active-pill::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 6px var(--primary);
+  }
+
+  /* Surface divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+
+  /* Premium top border accent */
+  .border-top-brand {
+    border-top: 2px solid;
+    border-image: linear-gradient(90deg, #00D084, #007A4D) 1;
+  }
+
+  /* Badge pill */
+  .badge-green {
+    background: rgba(0, 208, 132, 0.12);
+    color: #00D084;
+    border: 1px solid rgba(0, 208, 132, 0.25);
+  }
+
+  .badge-gold {
+    background: rgba(245, 196, 81, 0.12);
+    color: #F5C451;
+    border: 1px solid rgba(245, 196, 81, 0.25);
+  }
+
+  .badge-blue {
+    background: rgba(96, 165, 250, 0.12);
+    color: #60a5fa;
+    border: 1px solid rgba(96, 165, 250, 0.25);
+  }
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: #0a0a0a;
-}
-::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 2px;
+/* ─── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.22); }
+
+/* ─── Selection ─────────────────────────────────────────────── */
+::selection {
+  background: rgba(0, 208, 132, 0.25);
+  color: #F8FAFC;
 }
