@@ -1,4 +1,5 @@
 import type { RankingEntry } from "@/types";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import { cn } from "@/lib/utils";
 
 interface RankingTableProps {
@@ -6,10 +7,17 @@ interface RankingTableProps {
   currentUserId?: string;
 }
 
+const POSITION_STYLE = {
+  1: { badge: "text-[#F5C451] text-lg", glow: "shadow-[0_0_12px_rgba(245,196,81,0.12)]", pts: "text-[#F5C451]" },
+  2: { badge: "text-[#94A3B8] text-lg", glow: "", pts: "text-[#94A3B8]" },
+  3: { badge: "text-[#CD7F32] text-base", glow: "", pts: "text-[#CD7F32]" },
+};
+const MEDALS: Record<number, string> = { 1: "🥇", 2: "🥈", 3: "🥉" };
+
 export function RankingTable({ entries, currentUserId }: RankingTableProps) {
   if (entries.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-400 text-sm">
+      <div className="text-center py-10 text-[#475569] text-sm">
         El ranking estará disponible cuando haya pronósticos
       </div>
     );
@@ -18,86 +26,73 @@ export function RankingTable({ entries, currentUserId }: RankingTableProps) {
   return (
     <div className="space-y-1.5">
       {/* Header */}
-      <div className="grid grid-cols-[auto_1fr_auto_auto] gap-3 px-3 py-1 text-xs text-gray-500 font-medium">
-        <span className="w-6 text-center">#</span>
-        <span>Jugador</span>
-        <span className="text-center">Aciertos</span>
-        <span className="text-center min-w-[50px]">Puntos</span>
+      <div className="grid grid-cols-[2rem_1fr_3.5rem_3.5rem] gap-3 px-3 pb-1">
+        <span className="text-[10px] font-semibold text-[#475569] uppercase tracking-wider text-center">#</span>
+        <span className="text-[10px] font-semibold text-[#475569] uppercase tracking-wider">Jugador</span>
+        <span className="text-[10px] font-semibold text-[#475569] uppercase tracking-wider text-center">Aciertos</span>
+        <span className="text-[10px] font-semibold text-[#475569] uppercase tracking-wider text-center">Puntos</span>
       </div>
 
       {entries.map((entry) => {
-        const isCurrentUser = entry.usuario.id === currentUserId;
-        const isTop3 = entry.posicion <= 3;
+        const isMe = entry.usuario.id === currentUserId;
+        const pos = entry.posicion as 1 | 2 | 3;
+        const style = POSITION_STYLE[pos];
+        const medal = MEDALS[pos];
 
         return (
           <div
             key={entry.usuario.id}
             className={cn(
-              "grid grid-cols-[auto_1fr_auto_auto] gap-3 items-center px-3 py-2.5 rounded-lg transition-colors",
-              isCurrentUser
-                ? "bg-[#00875a]/15 border border-[#00875a]/30"
-                : "bg-white/5 hover:bg-white/8",
-              isTop3 && !isCurrentUser && "bg-white/5"
+              "grid grid-cols-[2rem_1fr_3.5rem_3.5rem] gap-3 items-center px-3 py-2.5 rounded-xl transition-colors",
+              isMe
+                ? "bg-[#00D084]/10 border border-[#00D084]/25"
+                : pos <= 3
+                ? `bg-white/6 border border-white/8 ${style?.glow ?? ""}`
+                : "bg-white/4 border border-white/6 hover:bg-white/6"
             )}
           >
             {/* Position */}
-            <div className="w-6 text-center">
-              {entry.posicion === 1 ? (
-                <span className="text-lg">🥇</span>
-              ) : entry.posicion === 2 ? (
-                <span className="text-lg">🥈</span>
-              ) : entry.posicion === 3 ? (
-                <span className="text-lg">🥉</span>
+            <div className="text-center">
+              {medal ? (
+                <span className={style?.badge ?? "text-base"}>{medal}</span>
               ) : (
-                <span className="text-sm font-bold text-gray-400">
-                  {entry.posicion}
-                </span>
+                <span className="text-sm font-bold text-[#475569] tabular-nums">{entry.posicion}</span>
               )}
             </div>
 
-            {/* Name & Avatar */}
+            {/* Avatar + Name */}
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-7 h-7 rounded-full bg-[#1a1a1a] border border-white/10 flex items-center justify-center text-sm flex-shrink-0">
-                {entry.usuario.avatar ||
-                  entry.usuario.nombre.charAt(0).toUpperCase()}
-              </div>
+              <UserAvatar
+                name={entry.usuario.nombre}
+                colorId={entry.usuario.avatar}
+                size="sm"
+                className="rounded-xl flex-shrink-0"
+              />
               <div className="min-w-0">
-                <span
-                  className={cn(
-                    "text-sm font-medium truncate block",
-                    isCurrentUser ? "text-[#10b981]" : "text-white"
-                  )}
-                >
+                <p className={cn(
+                  "text-sm font-semibold truncate",
+                  isMe ? "text-[#00D084]" : "text-[#F8FAFC]"
+                )}>
                   {entry.usuario.nombre}
-                  {isCurrentUser && (
-                    <span className="ml-1 text-xs opacity-75">(Tú)</span>
-                  )}
-                </span>
+                  {isMe && <span className="text-xs font-normal text-[#00D084]/70 ml-1">(Tú)</span>}
+                </p>
                 {entry.racha > 1 && (
-                  <span className="text-xs text-orange-400">
-                    🔥 {entry.racha} seguidos
-                  </span>
+                  <p className="text-[11px] text-[#FB923C]">🔥 {entry.racha} seguidos</p>
                 )}
               </div>
             </div>
 
             {/* Aciertos */}
             <div className="text-center">
-              <span className="text-sm text-gray-300">{entry.aciertos}</span>
+              <span className="text-sm font-medium text-[#94A3B8] tabular-nums">{entry.aciertos}</span>
             </div>
 
             {/* Points */}
-            <div className="text-center min-w-[50px]">
-              <span
-                className={cn(
-                  "text-sm font-bold",
-                  isCurrentUser
-                    ? "text-[#10b981]"
-                    : entry.posicion <= 3
-                    ? "text-yellow-400"
-                    : "text-white"
-                )}
-              >
+            <div className="text-center">
+              <span className={cn(
+                "text-sm font-black tabular-nums",
+                isMe ? "text-[#00D084]" : (style?.pts ?? "text-[#F8FAFC]")
+              )}>
                 {entry.puntos}
               </span>
             </div>
